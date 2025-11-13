@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import { ThemeProvider } from './ThemeContext';
 
 //NOTE - Screen Imports of the screens in our APP
 import HomeScreen from './Screens/HomeScreen';
@@ -42,7 +43,8 @@ function Tabs() {
 
 //SECTION - Main APP wrapper
 export default function App() {
-  return (
+return (
+  <ThemeProvider>
     <PaperProvider>
       <NavigationContainer>
         <Stack.Navigator>
@@ -55,6 +57,8 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
-  );
+  </ThemeProvider>
+);
+
 }
 //!SECTION
