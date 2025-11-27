@@ -1,50 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   SectionList,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Searchbar, Chip, Button, IconButton } from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTheme } from '../ThemeContext';
 
-const FILTERS = [
-  'Today', 'Fitness', 'Social', 'Outdoors', 'Family', 'Music'
-];
+const FILTERS = ['Today', 'Fitness', 'Social', 'Outdoors', 'Family', 'Music'];
+
+function formatDateLabel(date) {
+  const day = date.getDate();
+  const month = date.toLocaleDateString('en-US', { month: 'short' });
+  const year = date.getFullYear();
+  return `${day}/${('0' + (date.getMonth() + 1)).slice(-2)}/${year}`;
+}
+
+function getTodayDisplay() {
+  const now = new Date();
+  const weekDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+  const day = now.getDate();
+  const month = now.toLocaleDateString('en-US', { month: 'short' });
+  return `${weekDay} – ${month} ${day}`;
+}
 
 export default function EventsScreen({ navigation }) {
   const { isDarkTheme } = useTheme();
   const [search, setSearch] = useState('');
+  const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(['Today']);
   const [sections, setSections] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true); setError('');
+      setIsLoading(true);
+      setError('');
       try {
         const res = await fetch('https://jsonplaceholder.typicode.com/posts');
         const data = await res.json();
         const withTags = data.slice(0, 10).map((item, idx) => ({
           id: item.id.toString(),
           title: item.title,
-          time: idx % 2 === 0 ? "09:00–10:00" : "13:00–14:00",
-          location: idx % 2 === 0 ? "Community Hall" : "Online",
+          time: idx % 2 === 0 ? '09:00–10:00' : '13:00–14:00',
+          location: idx % 2 === 0 ? 'Community Hall' : 'Online',
           spots: Math.floor(Math.random() * 10) + 1,
           tags: idx % 2 === 0 ? ['Today', 'Fitness'] : ['Tomorrow', 'Social'],
         }));
+
         setSections([
           {
-            title: 'Today – 20 Nov',
-            data: withTags.filter(ev => ev.tags.includes('Today'))
+            title: '',
+            data: withTags.filter(ev => ev.tags.includes('Today')),
           },
           {
-            title: 'Tomorrow – 21 Nov',
-            data: withTags.filter(ev => ev.tags.includes('Tomorrow'))
-          }
+            title: 'Tomorrow',
+            data: withTags.filter(ev => ev.tags.includes('Tomorrow')),
+          },
         ]);
       } catch (err) {
         setError('Failed to fetch events.');
@@ -55,54 +77,87 @@ export default function EventsScreen({ navigation }) {
     fetchData();
   }, []);
 
-  // Filtering based on search text and active chips
-  const filteredSections = sections.map(section => ({
-    ...section,
-    data: section.data.filter(ev =>
-      (selected.length === 0 || ev.tags.some(tag => selected.includes(tag))) &&
-      (search.length === 0 || ev.title.toLowerCase().includes(search.toLowerCase()))
-    )
-  })).filter(section => section.data.length > 0);
+  const filteredSections = sections
+    .map(section => ({
+      ...section,
+      data: section.data.filter(ev =>
+        (selected.length === 0 || ev.tags.some(tag => selected.includes(tag))) &&
+        (query.length === 0 || ev.title.toLowerCase().includes(query.toLowerCase()))
+      ),
+    }))
+    .filter(section => section.data.length > 0);
+
+  const hasResults = filteredSections.some(section => section.data.length > 0);
+
+  useEffect(() => {
+    if (!isLoading && !error && query.length > 0 && !hasResults) {
+      navigation.navigate('EventNotFound');
+    }
+  }, [isLoading, error, query, hasResults, navigation]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setSelected(['Today']);
+      setSearch('');
+      setQuery('');
+      setSelectedDate(new Date());
+    }, []),
+  );
 
   const styles = StyleSheet.create({
     safe: {
       flex: 1,
-      backgroundColor: isDarkTheme ? '#141c22' : '#e9f5ff',
+      backgroundColor: '#2d75a8',
     },
     headerBar: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      backgroundColor: isDarkTheme ? '#1a2732' : '#b3ddf6',
-      paddingHorizontal: 14,
-      paddingTop: 15,
-      paddingBottom: 7,
+      paddingHorizontal: 18,
+      paddingTop: 18,
+      paddingBottom: 10,
     },
-    title: {
-      fontSize: 22,
-      fontWeight: '800',
-      color: isDarkTheme ? '#cde6fa' : '#276baf',
+    titleWrapper: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    titlePill: {
+      paddingHorizontal: 24,
+      paddingVertical: 6,
+      borderRadius: 6,
+      backgroundColor: '#52a9e8',
+    },
+    titleText: {
+      fontSize: 20,
+      letterSpacing: 1,
+      color: '#ffffff',
+      fontWeight: '700',
+    },
+    headerDate: {
+      marginTop: 4,
+      fontSize: 13,
+      color: '#e0f3ff',
     },
     filterBox: {
-      backgroundColor: isDarkTheme ? '#1d2a36' : '#fff',
+      backgroundColor: isDarkTheme ? '#1d2a36' : '#ffffff',
       marginHorizontal: 14,
       borderRadius: 18,
       elevation: 2,
       padding: 20,
-      marginTop: 18,
+      marginTop: 10,
       marginBottom: 7,
-      shadowColor: isDarkTheme ? '#000' : "#000",
+      shadowColor: '#000',
       shadowOpacity: 0.08,
       shadowRadius: 12,
     },
     search: {
       borderRadius: 14,
       marginBottom: 10,
-      backgroundColor: isDarkTheme ? '#223344' : '#f7fbff'
+      backgroundColor: isDarkTheme ? '#223344' : '#f7fbff',
     },
     chipRow: {
       flexDirection: 'row',
-      marginBottom: 8
+      marginBottom: 8,
     },
     chip: {
       marginRight: 10,
@@ -112,93 +167,122 @@ export default function EventsScreen({ navigation }) {
       minHeight: 39,
       borderRadius: 15,
       borderWidth: 2,
-      backgroundColor: isDarkTheme ? '#2a3641' : '#fff',
+      backgroundColor: isDarkTheme ? '#2a3641' : '#ffffff',
       borderColor: isDarkTheme ? '#389eff' : '#276baf',
     },
     chipSelected: {
       backgroundColor: isDarkTheme ? '#278be6' : '#276baf',
-      borderColor: isDarkTheme ? '#56cafe' : '#276baf'
+      borderColor: isDarkTheme ? '#56cafe' : '#276baf',
     },
     chipLabel: {
       fontSize: 15,
       fontWeight: '600',
-      color: isDarkTheme ? '#c5e2ff' : '#276baf'
+      color: isDarkTheme ? '#c5e2ff' : '#276baf',
     },
     chipLabelSelected: {
-      color: '#fff'
+      color: '#ffffff',
+    },
+    dateRow: {
+      marginTop: 10,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    dateButton: {
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: isDarkTheme ? '#65aaff' : '#276baf',
+      backgroundColor: isDarkTheme ? '#223344' : '#f3f7ff',
+    },
+    dateButtonText: {
+      fontSize: 13,
+      color: isDarkTheme ? '#cfe8ff' : '#276baf',
+      fontWeight: '600',
     },
     sectionHeader: {
       fontWeight: 'bold',
       fontSize: 15,
-      color: isDarkTheme ? '#99d0ff' : '#164178',
+      color: isDarkTheme ? '#99d0ff' : '#ffffff',
       backgroundColor: 'transparent',
       marginLeft: 16,
-      marginTop: 20,
-      marginBottom: 7,
-      letterSpacing: 0.4
+      marginTop: 12,
+      marginBottom: 4,
+      letterSpacing: 0.4,
     },
     eventCard: {
-      backgroundColor: isDarkTheme ? "#1c2837" : "#fff",
+      backgroundColor: isDarkTheme ? '#1c2837' : '#ffffff',
       borderRadius: 15,
       marginVertical: 5,
       marginHorizontal: 12,
       padding: 13,
-      shadowColor: "#000",
+      shadowColor: '#000',
       shadowOpacity: 0.05,
       shadowRadius: 7,
       elevation: 1,
-      flexDirection: "column"
+      flexDirection: 'column',
     },
     cardTitle: {
-      fontWeight: "bold",
+      fontWeight: 'bold',
       fontSize: 16,
       marginBottom: 4,
-      color: isDarkTheme ? "#d7f4ff" : "#1c2126"
+      color: isDarkTheme ? '#d7f4ff' : '#1c2126',
     },
     metaRow: {
-      color: isDarkTheme ? "#6eb7d9" : "#276baf",
+      color: isDarkTheme ? '#6eb7d9' : '#276baf',
       fontSize: 13,
-      marginBottom: 6
+      marginBottom: 6,
     },
-    tagBar: { flexDirection: "row", marginBottom: 5 },
+    tagBar: { flexDirection: 'row', marginBottom: 5 },
     spotText: {
-      color: "#e45757",
+      color: '#e45757',
       fontSize: 13,
       marginBottom: 3,
-      marginTop: 2
+      marginTop: 2,
     },
     registerBtn: {
       alignSelf: 'flex-end',
       marginTop: 3,
       borderRadius: 13,
       paddingHorizontal: 8,
-      backgroundColor: isDarkTheme ? '#389eff' : '#276baf'
-    }
+      backgroundColor: isDarkTheme ? '#389eff' : '#276baf',
+    },
   });
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
       <View style={styles.headerBar}>
-        <Text style={styles.title}>Events</Text>
+        <View style={{ width: 32 }} />
+        <View style={styles.titleWrapper}>
+          <View style={styles.titlePill}>
+            <Text style={styles.titleText}>Events</Text>
+          </View>
+          <Text style={styles.headerDate}>{getTodayDisplay()}</Text>
+        </View>
         <IconButton
           icon="cog-outline"
-          size={28}
+          size={26}
           onPress={() => navigation.navigate('Settings')}
-          color={isDarkTheme ? '#aee' : '#276baf'}
+          color="#ffffff"
         />
       </View>
+
       <View style={styles.filterBox}>
         <Searchbar
           placeholder="Search events…"
           value={search}
           onChangeText={setSearch}
+          onIconPress={() => setQuery(search)}
+          onSubmitEditing={() => setQuery(search)}
           style={styles.search}
           inputStyle={{
             fontSize: 16,
-            color: isDarkTheme ? "#cfe8ff" : "#1c2126"
+            color: isDarkTheme ? '#cfe8ff' : '#1c2126',
           }}
-          iconColor={isDarkTheme ? "#65aaff" : "#276baf"}
+          iconColor={isDarkTheme ? '#65aaff' : '#276baf'}
         />
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -211,92 +295,141 @@ export default function EventsScreen({ navigation }) {
                 key={f}
                 style={[
                   styles.chip,
-                  selectedChip && styles.chipSelected
+                  selectedChip && styles.chipSelected,
                 ]}
                 textStyle={[
                   styles.chipLabel,
-                  selectedChip && styles.chipLabelSelected
+                  selectedChip && styles.chipLabelSelected,
                 ]}
                 onPress={() => {
                   setSelected(old =>
                     old.includes(f)
                       ? old.filter(tag => tag !== f)
-                      : [...old, f]
+                      : [...old, f],
                   );
                 }}
-                mode={selectedChip ? "flat" : "outlined"}
+                mode={selectedChip ? 'flat' : 'outlined'}
               >
                 {f}
               </Chip>
             );
           })}
         </ScrollView>
+
+        <View style={styles.dateRow}>
+          <TouchableOpacity
+            style={styles.dateButton}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text style={styles.dateButtonText}>
+              Pick date  {formatDateLabel(selectedDate)}
+            </Text>
+          </TouchableOpacity>
+
+          <Button
+            mode="outlined"
+            compact
+            onPress={() => {
+              setSelected(['Today']);
+              setSearch('');
+              setQuery('');
+              setSelectedDate(new Date());   // reset picked date to today
+            }}
+          >
+            Clear filters
+          </Button>
+        </View>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display="default"
+            onChange={(event, date) => {
+              setShowDatePicker(false);
+              if (date) {
+                setSelectedDate(date);
+              }
+            }}
+          />
+        )}
       </View>
+
       {isLoading ? (
-        <Text style={{ textAlign: 'center', marginTop: 40, color: isDarkTheme ? '#fff' : '#222' }}>
+        <Text style={{ textAlign: 'center', marginTop: 40, color: '#ffffff' }}>
           Loading events...
         </Text>
       ) : error ? (
-        <Text style={{ color: 'red', textAlign: 'center', marginTop: 40 }}>{error}</Text>
+        <Text style={{ color: 'red', textAlign: 'center', marginTop: 40 }}>
+          {error}
+        </Text>
       ) : (
         <SectionList
           sections={filteredSections}
           keyExtractor={item => item.id}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text style={styles.sectionHeader}>{title}</Text>
-          )}
+          renderSectionHeader={({ section: { title } }) =>
+            title ? <Text style={styles.sectionHeader}>{title}</Text> : null
+          }
           renderItem={({ item }) => (
-            <View style={styles.eventCard}>
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.metaRow}>
-                {item.time} · {item.location}
-              </Text>
-              <View style={styles.tagBar}>
-                {item.tags.map(tag => (
-                  <Chip
-                    key={tag}
-                    style={{
-                      backgroundColor: isDarkTheme ? '#25364c' : '#ecf3ff',
-                      marginRight: 7,
-                      height: 28,
-                      borderRadius: 9
-                    }}
-                    textStyle={{
-                      color: isDarkTheme ? "#73c9fc" : "#276baf",
-                      fontSize: 13,
-                      fontWeight: "700",
-                    }}
-                    compact
-                  >
-                    {tag}
-                  </Chip>
-                ))}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Details', { event: item })}
+            >
+              <View style={styles.eventCard}>
+                <Text style={styles.cardTitle}>{item.title}</Text>
+                <Text style={styles.metaRow}>
+                  {item.time} · {item.location}
+                </Text>
+                <View style={styles.tagBar}>
+                  {item.tags.map(tag => (
+                    <Chip
+                      key={tag}
+                      style={{
+                        backgroundColor: isDarkTheme ? '#25364c' : '#ecf3ff',
+                        marginRight: 7,
+                        height: 28,
+                        borderRadius: 9,
+                      }}
+                      textStyle={{
+                        color: isDarkTheme ? '#73c9fc' : '#276baf',
+                        fontSize: 13,
+                        fontWeight: '700',
+                      }}
+                      compact
+                    >
+                      {tag}
+                    </Chip>
+                  ))}
+                </View>
+                <Text style={styles.spotText}>
+                  Spots remaining: {item.spots}
+                </Text>
+                <Button
+                  mode="contained"
+                  compact
+                  style={styles.registerBtn}
+                  labelStyle={{
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    fontSize: 15,
+                  }}
+                  onPress={() =>
+                    navigation.navigate('RegisterEvent', { event: item })
+                  }
+                >
+                  Register
+                </Button>
               </View>
-              <Text style={styles.spotText}>
-                Spots remaining: {item.spots}
-              </Text>
-              <Button
-                mode="contained"
-                compact
-                style={styles.registerBtn}
-                labelStyle={{
-                  color: '#fff',
-                  fontWeight: 'bold',
-                  fontSize: 15
-                }}
-                onPress={() => navigation.navigate('RegisterEvent', { event: item })}
-              >
-                Register
-              </Button>
-            </View>
+            </TouchableOpacity>
           )}
           contentContainerStyle={{ paddingBottom: 24 }}
           ListEmptyComponent={
-            <Text style={{
-              color: isDarkTheme ? '#ccc' : '#444',
-              textAlign: 'center',
-              marginTop: 40
-            }}>
+            <Text
+              style={{
+                color: '#ffffff',
+                textAlign: 'center',
+                marginTop: 40,
+              }}
+            >
               No events found.
             </Text>
           }

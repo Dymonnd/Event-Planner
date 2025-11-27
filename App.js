@@ -12,6 +12,7 @@ import DetailsScreen from './Screens/DetailsScreen';
 import EventLoadScreen from './Screens/EventLoadScreen';
 import EventsScreen from './Screens/EventsScreen';
 import RegisterEventScreen from './Screens/RegisterEventScreen';
+import EventNotFoundScreen from './Screens/EventNotFoundScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -52,6 +53,10 @@ export default function App() {
             <Stack.Screen name="Details" component={DetailsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="EventLoad" component={EventLoadScreen} options={{ headerShown: false }} />
             <Stack.Screen name="RegisterEvent" component={RegisterEventScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="EventNotFound" component={EventNotFoundScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Events" component={EventsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
       </PaperProvider>

@@ -4,7 +4,7 @@ import {
   Text,
   SectionList,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Searchbar, Chip, IconButton } from 'react-native-paper';
@@ -38,7 +38,7 @@ export default function HomeScreen({ navigation }) {
           time: i % 3 === 0 ? '08:30–09:15' : '11:30–13:00',
           location: i % 2 === 0 ? 'Community Hall' : 'Online',
           spots: Math.floor(Math.random() * 10) + 1,
-          tags: i % 2 === 0 ? ['Today', 'Fitness'] : ['Today', 'Social']
+          tags: i % 2 === 0 ? ['Today', 'Fitness'] : ['Today', 'Social'],
         }));
         setEvents(mapped);
         setLoading(false);
@@ -47,18 +47,18 @@ export default function HomeScreen({ navigation }) {
 
   const sections = [
     {
-      title: `Today — ${getTodayDisplay()}`,
+      title: 'Today',
       data: events.filter(ev =>
         (selected.length === 0 || ev.tags.some(tag => selected.includes(tag))) &&
         (search.length === 0 || ev.title.toLowerCase().includes(search.toLowerCase()))
-      )
-    }
+      ),
+    },
   ];
 
   const styles = StyleSheet.create({
     safe: {
       flex: 1,
-      backgroundColor: isDarkTheme ? '#141c22' : '#eaf6ff'
+      backgroundColor: isDarkTheme ? '#141c22' : '#eaf6ff',
     },
     headerBar: {
       flexDirection: 'row',
@@ -79,7 +79,7 @@ export default function HomeScreen({ navigation }) {
     headerTitle: {
       fontSize: 19,
       fontWeight: 'bold',
-      color: isDarkTheme ? "#bfe9ff" : "#276baf",
+      color: isDarkTheme ? '#bfe9ff' : '#276baf',
       letterSpacing: 0.8,
     },
     welcomeCard: {
@@ -97,13 +97,33 @@ export default function HomeScreen({ navigation }) {
     welcomeHeading: {
       fontSize: 22,
       fontWeight: 'bold',
-      color: isDarkTheme ? "#aee7ff" : "#276baf",
+      color: isDarkTheme ? '#aee7ff' : '#276baf',
       marginBottom: 4,
     },
     welcomeText: {
       fontSize: 14,
-      color: isDarkTheme ? "#dbefff" : "#606060",
+      color: isDarkTheme ? '#dbefff' : '#606060',
+      marginBottom: 4,
+    },
+    welcomeDate: {
+      fontSize: 13,
+      color: isDarkTheme ? '#dbefff' : '#276baf',
       marginBottom: 7,
+    },
+    primaryButton: {
+      marginTop: 4,
+      paddingVertical: 10,
+      paddingHorizontal: 18,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: '#276baf',
+      alignSelf: 'flex-start',
+      backgroundColor: '#ffffff',
+    },
+    primaryButtonText: {
+      color: '#276baf',
+      fontWeight: '600',
+      fontSize: 14,
     },
     filterBox: {
       backgroundColor: isDarkTheme ? '#1d2a36' : '#fff',
@@ -114,14 +134,14 @@ export default function HomeScreen({ navigation }) {
       paddingHorizontal: 16,
       marginTop: 0,
       marginBottom: 8,
-      shadowColor: isDarkTheme ? '#000' : "#161719",
+      shadowColor: isDarkTheme ? '#000' : '#161719',
       shadowOpacity: 0.09,
-      shadowRadius: 14
+      shadowRadius: 14,
     },
     search: {
       borderRadius: 16,
       marginBottom: 11,
-      backgroundColor: isDarkTheme ? '#223344' : '#f3f5f7'
+      backgroundColor: isDarkTheme ? '#223344' : '#f3f5f7',
     },
     chipRow: {
       flexDirection: 'row',
@@ -135,20 +155,20 @@ export default function HomeScreen({ navigation }) {
       paddingHorizontal: 24,
       borderRadius: 17,
       borderWidth: 2,
-      borderColor: isDarkTheme ? '#2ca5f7' : "#276baf",
-      backgroundColor: isDarkTheme ? '#223344' : "#fff"
+      borderColor: isDarkTheme ? '#2ca5f7' : '#276baf',
+      backgroundColor: isDarkTheme ? '#223344' : '#fff',
     },
     chipSelected: {
-      backgroundColor: isDarkTheme ? '#278be6' : "#276baf",
-      borderColor: isDarkTheme ? '#2ca5f7' : "#276baf"
+      backgroundColor: isDarkTheme ? '#278be6' : '#276baf',
+      borderColor: isDarkTheme ? '#2ca5f7' : '#276baf',
     },
     chipLabel: {
       fontSize: 16,
-      fontWeight: "700",
-      color: isDarkTheme ? '#93cdf0' : "#276baf"
+      fontWeight: '700',
+      color: isDarkTheme ? '#93cdf0' : '#276baf',
     },
     chipLabelSelected: {
-      color: '#fff'
+      color: '#fff',
     },
     sectionHeader: {
       fontWeight: 'bold',
@@ -157,76 +177,79 @@ export default function HomeScreen({ navigation }) {
       marginLeft: 22,
       marginTop: 18,
       marginBottom: 7,
-      letterSpacing: 0.45
+      letterSpacing: 0.45,
     },
     eventCard: {
-      backgroundColor: isDarkTheme ? '#202d39' : "#fff",
+      backgroundColor: isDarkTheme ? '#202d39' : '#fff',
       borderRadius: 17,
       marginVertical: 8,
       marginHorizontal: 14,
       padding: 16,
-      shadowColor: "#000",
+      shadowColor: '#000',
       shadowOpacity: 0.06,
       shadowRadius: 7,
       elevation: 2,
-      position: 'relative'
     },
-    cardTitle: { fontWeight: "bold", fontSize: 17, marginBottom: 5, color: isDarkTheme ? "#eaf6ff" : "#18212c" },
-    metaRow: { color: isDarkTheme ? "#a7caff" : "#276baf", fontSize: 13, marginBottom: 8 },
-    tagBar: { flexDirection: "row", marginBottom: 6 },
+    cardTitle: {
+      fontWeight: 'bold',
+      fontSize: 17,
+      marginBottom: 5,
+      color: isDarkTheme ? '#eaf6ff' : '#18212c',
+    },
+    metaRow: {
+      color: isDarkTheme ? '#a7caff' : '#276baf',
+      fontSize: 13,
+      marginBottom: 8,
+    },
+    tagBar: { flexDirection: 'row', marginBottom: 6 },
     tag: {
       backgroundColor: isDarkTheme ? '#163047' : '#ecf3ff',
       marginRight: 7,
       height: 28,
       paddingHorizontal: 15,
       borderRadius: 9,
-      justifyContent: 'center'
+      justifyContent: 'center',
     },
     tagLabel: {
-      color: isDarkTheme ? "#b8e6fb" : "#276baf",
+      color: isDarkTheme ? '#b8e6fb' : '#276baf',
       fontSize: 13,
-      fontWeight: "700"
+      fontWeight: '700',
     },
-    spotText: { color: "#e45757", fontSize: 13, marginTop: 2, marginBottom: 4 },
-    shareIcon: {
-      position: 'absolute',
-      top: 13,
-      right: 13,
-      color: isDarkTheme ? "#b8e6fb" : "#276baf"
-    }
+    spotText: { color: '#e45757', fontSize: 13, marginTop: 2, marginBottom: 4 },
   });
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-      {/* App header bar */}
       <View style={styles.headerBar}>
         <Text style={styles.headerTitle}>Elevate Horizon Connect</Text>
         <IconButton
           icon="cog-outline"
-          size={26}
+          size={24}
           onPress={() => navigation.navigate('Settings')}
-          color={isDarkTheme ? '#aee' : '#276baf'}
+          color={isDarkTheme ? '#bfe9ff' : '#276baf'}
         />
       </View>
 
-      {/* Welcome Card */}
       <View style={styles.welcomeCard}>
         <Text style={styles.welcomeHeading}>Welcome</Text>
         <Text style={styles.welcomeText}>
-          Find and register for Community Events
+          Find and register for community events.
         </Text>
+        <Text style={styles.welcomeDate}>{getTodayDisplay()}</Text>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate('Events')}
+        >
+          <Text style={styles.primaryButtonText}>View Today’s Events</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Filter/Search Card */}
       <View style={styles.filterBox}>
         <Searchbar
-          placeholder="Search Events"
+          placeholder="Search Events..."
           value={search}
           onChangeText={setSearch}
           style={styles.search}
-          inputStyle={{ fontSize: 16, color: isDarkTheme ? "#eaf6ff" : "#222" }}
-          iconColor={isDarkTheme ? "#82c3ff" : "#5577cc"}
-          placeholderTextColor={isDarkTheme ? "#8aacc8" : "#aaa"}
         />
         <View style={styles.chipRow}>
           {FILTERS.map(f => {
@@ -234,22 +257,16 @@ export default function HomeScreen({ navigation }) {
             return (
               <Chip
                 key={f}
-                style={[
-                  styles.chip,
-                  selectedChip && styles.chipSelected
-                ]}
-                textStyle={[
-                  styles.chipLabel,
-                  selectedChip && styles.chipLabelSelected
-                ]}
-                onPress={() => {
+                style={[styles.chip, selectedChip && styles.chipSelected]}
+                textStyle={[styles.chipLabel, selectedChip && styles.chipLabelSelected]}
+                onPress={() =>
                   setSelected(old =>
                     old.includes(f)
                       ? old.filter(tag => tag !== f)
-                      : [...old, f]
-                  );
-                }}
-                mode={selectedChip ? "flat" : "outlined"}
+                      : [...old, f],
+                  )
+                }
+                mode={selectedChip ? 'flat' : 'outlined'}
               >
                 {f}
               </Chip>
@@ -258,13 +275,8 @@ export default function HomeScreen({ navigation }) {
         </View>
       </View>
 
-      {/* Events List */}
       {loading ? (
-        <Text style={{
-          textAlign: 'center',
-          marginTop: 40,
-          color: isDarkTheme ? '#c8e8ff' : '#276baf'
-        }}>
+        <Text style={{ textAlign: 'center', marginTop: 30 }}>
           Loading events...
         </Text>
       ) : (
@@ -275,7 +287,9 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.sectionHeader}>{title}</Text>
           )}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigation.navigate('Details', { event: item })}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Details', { event: item })}
+            >
               <View style={styles.eventCard}>
                 <Text style={styles.cardTitle}>{item.title}</Text>
                 <Text style={styles.metaRow}>
@@ -283,7 +297,7 @@ export default function HomeScreen({ navigation }) {
                 </Text>
                 <View style={styles.tagBar}>
                   {item.tags.map(tag => (
-                    <View style={styles.tag} key={tag}>
+                    <View key={tag} style={styles.tag}>
                       <Text style={styles.tagLabel}>{tag}</Text>
                     </View>
                   ))}
@@ -291,20 +305,9 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.spotText}>
                   Spots remaining: {item.spots}
                 </Text>
-                <IconButton icon="share-variant" size={22} style={styles.shareIcon} color={isDarkTheme ? "#b8e6fb" : "#276baf"} />
               </View>
             </TouchableOpacity>
           )}
-          contentContainerStyle={{ paddingBottom: 24 }}
-          ListEmptyComponent={
-            <Text style={{
-              color: isDarkTheme ? "#88bfff" : "#888",
-              textAlign: 'center',
-              marginTop: 40
-            }}>
-              No events found.
-            </Text>
-          }
         />
       )}
     </SafeAreaView>
