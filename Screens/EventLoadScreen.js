@@ -5,7 +5,7 @@ export default function EventLoadScreen({ navigation }) {
   useEffect(() => {
     const t = setTimeout(() => {
       navigation.replace('Events');
-    }, 700); // adjust duration if you want longer/shorter
+    }, 700); 
 
     return () => clearTimeout(t);
   }, [navigation]);

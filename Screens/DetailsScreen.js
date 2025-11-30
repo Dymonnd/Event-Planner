@@ -21,7 +21,7 @@ export default function DetailsScreen({ route, navigation }) {
         message: `${event.title} – ${event.time || ''} @ ${event.location}`,
       });
     } catch (e) {
-      // optional: handle error
+      
     }
   };
 

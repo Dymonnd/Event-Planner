@@ -15,7 +15,29 @@ import RegisterEventScreen from './Screens/RegisterEventScreen';
 import EventNotFoundScreen from './Screens/EventNotFoundScreen';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const EventsStack = createStackNavigator();
+const HomeStack = createStackNavigator();
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name="HomeMain" component={HomeScreen} />
+      <HomeStack.Screen name="Details" component={DetailsScreen} />
+    </HomeStack.Navigator>
+  );
+}
+
+function EventsStackScreen() {
+  return (
+    <EventsStack.Navigator screenOptions={{ headerShown: false }}>
+      <EventsStack.Screen name="Events" component={EventsScreen} />
+      <EventsStack.Screen name="Details" component={DetailsScreen} />
+      <EventsStack.Screen name="RegisterEvent" component={RegisterEventScreen} />
+      <EventsStack.Screen name="EventLoad" component={EventLoadScreen} />
+      <EventsStack.Screen name="EventNotFound" component={EventNotFoundScreen} />
+    </EventsStack.Navigator>
+  );
+}
 
 function Tabs() {
   return (
@@ -32,7 +54,7 @@ function Tabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Events" component={EventsScreen} />
+      <Tab.Screen name="Events" component={EventsStackScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
@@ -43,21 +65,7 @@ export default function App() {
     <ThemeProvider>
       <PaperProvider>
         <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Root"
-              component={Tabs}
-              options={{ headerShown: false }}
-            />
-            {/* Navigation to details, registration, loading, etc from any tab */}
-            <Stack.Screen name="Details" component={DetailsScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="EventLoad" component={EventLoadScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="RegisterEvent" component={RegisterEventScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="EventNotFound" component={EventNotFoundScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Events" component={EventsScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
-          </Stack.Navigator>
+          <Tabs />
         </NavigationContainer>
       </PaperProvider>
     </ThemeProvider>

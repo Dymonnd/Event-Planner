@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState } from 'react';
 
-// Create the ThemeContext
+
 const ThemeContext = createContext();
 
-// Provider component to wrap your app
+p
 export const ThemeProvider = ({ children }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
 
@@ -14,5 +14,5 @@ export const ThemeProvider = ({ children }) => {
   );
 };
 
-// Hook to use the theme elsewhere
+
 export const useTheme = () => useContext(ThemeContext);

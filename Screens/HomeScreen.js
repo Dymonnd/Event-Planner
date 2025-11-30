@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Searchbar, Chip, IconButton } from 'react-native-paper';
 import { useTheme } from '../ThemeContext';
 
-const FILTERS = ['Today', 'Fitness', 'Social', 'Outdoors', 'Family', 'Music'];
+const FILTERS = ['Today', 'Fitness', 'Social', 'Outdoors', 'Community', 'Music'];
 
 function getTodayDisplay() {
   const now = new Date();
@@ -29,18 +29,24 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     setLoading(true);
-    fetch('https://jsonplaceholder.typicode.com/posts')
+    fetch('https://tafeshaun.github.io/elevate-data/events.json')
       .then(res => res.json())
       .then(data => {
-        const mapped = data.slice(0, 5).map((item, i) => ({
-          id: item.id.toString(),
-          title: item.title[0].toUpperCase() + item.title.slice(1),
-          time: i % 3 === 0 ? '08:30–09:15' : '11:30–13:00',
-          location: i % 2 === 0 ? 'Community Hall' : 'Online',
-          spots: Math.floor(Math.random() * 10) + 1,
-          tags: i % 2 === 0 ? ['Today', 'Fitness'] : ['Today', 'Social'],
+        const mapped = data.map(ev => ({
+          id: ev.id.toString(),
+          title: ev.title,
+          description: ev.description,
+          date: ev.date,
+          time: `${ev.startTime}–${ev.endTime}`,
+          location: ev.location,
+          spots: ev.spotsRemaining,
+          tags: ['Today', ev.category],
         }));
         setEvents(mapped);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log('HOME FETCH ERROR', err);
         setLoading(false);
       });
   }, []);
@@ -288,7 +294,12 @@ export default function HomeScreen({ navigation }) {
           )}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Details', { event: item })}
+              onPress={() =>
+                navigation.navigate('Events', {
+                  screen: 'Details',
+                  params: { event: item },
+                })
+              }
             >
               <View style={styles.eventCard}>
                 <Text style={styles.cardTitle}>{item.title}</Text>

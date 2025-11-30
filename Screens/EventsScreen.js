@@ -13,7 +13,7 @@ import { Searchbar, Chip, Button, IconButton } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTheme } from '../ThemeContext';
 
-const FILTERS = ['Today', 'Fitness', 'Social', 'Outdoors', 'Family', 'Music'];
+const FILTERS = ['Today', 'Fitness', 'Social', 'Outdoors', 'Community', 'Music'];
 
 function formatDateLabel(date) {
   const day = date.getDate();
@@ -47,28 +47,28 @@ export default function EventsScreen({ navigation }) {
       setIsLoading(true);
       setError('');
       try {
-        const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const res = await fetch('https://tafeshaun.github.io/elevate-data/events.json');
         const data = await res.json();
-        const withTags = data.slice(0, 10).map((item, idx) => ({
-          id: item.id.toString(),
-          title: item.title,
-          time: idx % 2 === 0 ? '09:00–10:00' : '13:00–14:00',
-          location: idx % 2 === 0 ? 'Community Hall' : 'Online',
-          spots: Math.floor(Math.random() * 10) + 1,
-          tags: idx % 2 === 0 ? ['Today', 'Fitness'] : ['Tomorrow', 'Social'],
+
+        const mapped = data.map(ev => ({
+          id: ev.id.toString(),
+          title: ev.title,
+          description: ev.description,
+          date: ev.date,
+          time: `${ev.startTime}–${ev.endTime}`,
+          location: ev.location,
+          spots: ev.spotsRemaining,
+          tags: ['Today', ev.category], 
         }));
 
         setSections([
           {
             title: '',
-            data: withTags.filter(ev => ev.tags.includes('Today')),
-          },
-          {
-            title: 'Tomorrow',
-            data: withTags.filter(ev => ev.tags.includes('Tomorrow')),
+            data: mapped,
           },
         ]);
       } catch (err) {
+        console.log('EVENTS FETCH ERROR', err);
         setError('Failed to fetch events.');
       } finally {
         setIsLoading(false);
@@ -333,7 +333,7 @@ export default function EventsScreen({ navigation }) {
               setSelected(['Today']);
               setSearch('');
               setQuery('');
-              setSelectedDate(new Date());   // reset picked date to today
+              setSelectedDate(new Date());
             }}
           >
             Clear filters

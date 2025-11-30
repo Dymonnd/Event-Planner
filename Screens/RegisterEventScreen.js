@@ -24,7 +24,7 @@ export default function RegisterEventScreen({ route, navigation }) {
   const styles = StyleSheet.create({
     safeContainer: {
       flex: 1,
-      backgroundColor: '#2d75a8',
+      backgroundColor: isDarkTheme ? '#121c23' : '#2d75a8',
     },
     headerBar: {
       flexDirection: 'row',
@@ -38,7 +38,7 @@ export default function RegisterEventScreen({ route, navigation }) {
       paddingHorizontal: 26,
       paddingVertical: 6,
       borderRadius: 6,
-      backgroundColor: '#52a9e8',
+      backgroundColor: isDarkTheme ? '#278be6' : '#52a9e8',
     },
     headerTitleText: {
       fontSize: 20,
@@ -52,7 +52,7 @@ export default function RegisterEventScreen({ route, navigation }) {
       paddingTop: 10,
     },
     card: {
-      backgroundColor: '#ffffff',
+      backgroundColor: isDarkTheme ? '#192637' : '#ffffff',
       borderRadius: 18,
       padding: 16,
       marginBottom: 18,
@@ -63,47 +63,48 @@ export default function RegisterEventScreen({ route, navigation }) {
     },
     selectLabel: {
       fontSize: 14,
-      color: '#444',
+      color: isDarkTheme ? '#cfe8ff' : '#444',
       marginBottom: 8,
     },
     eventBox: {
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: '#c8d3e5',
+      borderColor: isDarkTheme ? '#385777' : '#c8d3e5',
       padding: 12,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
+      backgroundColor: isDarkTheme ? '#182434' : '#ffffff',
     },
     eventTitle: {
       fontWeight: '700',
       fontSize: 16,
-      color: '#276baf',
+      color: isDarkTheme ? '#aee7ff' : '#276baf',
       marginBottom: 2,
     },
     eventSub: {
       fontSize: 12,
-      color: '#666',
+      color: isDarkTheme ? '#aac8ef' : '#666',
     },
     fieldLabel: {
       fontSize: 13,
-      color: '#555',
+      color: isDarkTheme ? '#cfe8ff' : '#555',
       marginTop: 10,
       marginBottom: 4,
     },
     textInput: {
       borderWidth: 1,
-      borderColor: '#d4d8e0',
+      borderColor: isDarkTheme ? '#385777' : '#d4d8e0',
       borderRadius: 8,
       paddingHorizontal: 10,
       paddingVertical: 8,
       fontSize: 14,
-      color: '#222',
-      backgroundColor: '#f9fafc',
+      color: isDarkTheme ? '#eaf6ff' : '#222',
+      backgroundColor: isDarkTheme ? '#182434' : '#f9fafc',
     },
     hint: {
       fontSize: 11,
-      color: '#999',
+      color: isDarkTheme ? '#9bb3d4' : '#999',
       marginTop: 2,
     },
     submitWrapper: {
@@ -155,7 +156,9 @@ export default function RegisterEventScreen({ route, navigation }) {
     return (
       <SafeAreaView style={styles.safeContainer} edges={['top', 'left', 'right']}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: '#fff' }}>No event data available.</Text>
+          <Text style={{ color: isDarkTheme ? '#eaf6ff' : '#fff' }}>
+            No event data available.
+          </Text>
         </View>
       </SafeAreaView>
     );
@@ -172,7 +175,7 @@ export default function RegisterEventScreen({ route, navigation }) {
             icon="cog-outline"
             size={24}
             onPress={() => navigation.navigate('Settings')}
-            color="#ffffff"
+            color={isDarkTheme ? '#cfe8ff' : '#ffffff'}
           />
         </View>
 
@@ -187,7 +190,9 @@ export default function RegisterEventScreen({ route, navigation }) {
                 <Text style={styles.eventTitle}>{event.title}</Text>
                 <Text style={styles.eventSub}>Change Event</Text>
               </View>
-              <Text style={{ fontSize: 18, color: '#555' }}>▾</Text>
+              <Text style={{ fontSize: 18, color: isDarkTheme ? '#cfe8ff' : '#555' }}>
+                ▾
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -196,7 +201,7 @@ export default function RegisterEventScreen({ route, navigation }) {
             <TextInput
               style={styles.textInput}
               placeholder="Bob Jobs"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
               value={name}
               onChangeText={setName}
             />
@@ -206,7 +211,7 @@ export default function RegisterEventScreen({ route, navigation }) {
             <TextInput
               style={styles.textInput}
               placeholder="bobs@jobsmail.com"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}
@@ -218,7 +223,7 @@ export default function RegisterEventScreen({ route, navigation }) {
             <TextInput
               style={styles.textInput}
               placeholder="0412345678"
-              placeholderTextColor="#aaa"
+              placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
               keyboardType="phone-pad"
               value={phone}
               onChangeText={setPhone}
@@ -233,7 +238,7 @@ export default function RegisterEventScreen({ route, navigation }) {
                 style={styles.submitButton}
                 onPress={handleRegister}
                 labelStyle={{ fontSize: 14 }}
-                buttonColor="#3CA6E5"
+                buttonColor={isDarkTheme ? '#2aabf7' : '#3CA6E5'}
               >
                 Submit Registration
               </Button>
