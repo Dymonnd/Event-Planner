@@ -1,3 +1,4 @@
+Elevate Horizon Connect
 Overview
 Elevate Horizon Connect is a simple mobile app built with React Native and Expo for a local council to share community events and allow residents to register. It focuses on showing today’s events and all upcoming events with basic search, filters, and registration.
 
@@ -35,12 +36,10 @@ Remote events JSON from a hosted endpoint.
 
 Data Source
 Events are loaded from a remote JSON file:
-
 https://tafeshaun.github.io/elevate-data/events.json
-
 The app maps each event to include title, date, time range, location, category tags, remaining spots, and description for details and registration.
 
-Project Structure (key folders)
+Project Structure
 App.js – navigation setup (tabs and stacks).
 
 /Screens
@@ -61,35 +60,42 @@ EventLoadScreen.js
 
 ThemeContext.js – light/dark theme toggle and context.
 
+Accessibility
+Added accessibility labels and hints on key interactive controls to support screen readers.
+
+Supports adjustable text size and dark/light theme preferences for improved readability.
+
+Touch targets are sized for easier navigation.
+
+Tested with common screen readers on iOS and Android.
+
 Running the App
 Clone the repository:
 
-git clone <https://github.com/Dymonnd/SHANICEHUGHES.git>
-
-cd <SHANICEHUGHES>
-
+bash
+git clone https://github.com/Dymonnd/SHANICEHUGHES.git
+cd SHANICEHUGHES
 Install dependencies:
 
+bash
 npm install
-or
-
+# or
 yarn
-
 Start the Expo development server:
 
+bash
 npx expo start
-
 Run on your device or emulator using the Expo Go app or an Android/iOS simulator.
 
-Assessment Notes
-This project was developed as part of the “Elevate Horizon Connect” mobile apps assessment to demonstrate:
+Future Improvements
+Implement keyboard navigation and focus management for improved accessibility.
 
-Core MVP screens (Home, Events, Register, Settings).
+Add localization support for multilingual users.
 
-Working navigation with tab + stack.
+Enhance form validation and error handling.
 
-Remote data integration with loading and error handling.
+Integrate push notifications for event updates.
 
-Basic UI/UX design with dark mode and accessibility considerations.
+Include automated testing for accessibility and usability.
 
-Use of version control with regular commits and a clear project structure.
+
