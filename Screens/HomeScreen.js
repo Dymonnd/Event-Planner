@@ -4,6 +4,7 @@ import {
   Text,
   SectionList,
   StyleSheet,
+  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -56,7 +57,8 @@ export default function HomeScreen({ navigation }) {
       title: 'Today',
       data: events.filter(ev =>
         (selected.length === 0 || ev.tags.some(tag => selected.includes(tag))) &&
-        (search.length === 0 || ev.title.toLowerCase().includes(search.toLowerCase()))
+        (search.length === 0 ||
+          ev.title.toLowerCase().includes(search.toLowerCase())),
       ),
     },
   ];
@@ -136,53 +138,53 @@ export default function HomeScreen({ navigation }) {
       marginHorizontal: 14,
       borderRadius: 26,
       elevation: 6,
-      paddingVertical: 18,
-      paddingHorizontal: 16,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
       marginTop: 0,
-      marginBottom: 8,
+      marginBottom: 4,
       shadowColor: isDarkTheme ? '#000' : '#161719',
       shadowOpacity: 0.09,
       shadowRadius: 14,
     },
     search: {
       borderRadius: 16,
-      marginBottom: 11,
+      marginBottom: 6,
       backgroundColor: isDarkTheme ? '#223344' : '#f3f5f7',
     },
     chipRow: {
       flexDirection: 'row',
-      flexWrap: 'wrap',
-      marginBottom: 5,
+      flexWrap: 'nowrap',
+      marginBottom: 8,
     },
     chip: {
       marginRight: 10,
-      marginBottom: 10,
-      paddingVertical: 10,
-      paddingHorizontal: 24,
-      borderRadius: 17,
+      marginBottom: 8,
+      paddingVertical: 6,
+      paddingHorizontal: 14,
+      borderRadius: 9,
       borderWidth: 2,
-      borderColor: isDarkTheme ? '#2ca5f7' : '#276baf',
-      backgroundColor: isDarkTheme ? '#223344' : '#fff',
+      backgroundColor: isDarkTheme ? '#2a3641' : '#ffffff',
+      borderColor: isDarkTheme ? '#389eff' : '#276baf',
     },
     chipSelected: {
       backgroundColor: isDarkTheme ? '#278be6' : '#276baf',
-      borderColor: isDarkTheme ? '#2ca5f7' : '#276baf',
+      borderColor: isDarkTheme ? '#56cafe' : '#276baf',
     },
     chipLabel: {
-      fontSize: 16,
+      fontSize: 13,
       fontWeight: '700',
-      color: isDarkTheme ? '#93cdf0' : '#276baf',
+      color: isDarkTheme ? '#c5e2ff' : '#276baf',
     },
     chipLabelSelected: {
-      color: '#fff',
+      color: '#ffffff',
     },
     sectionHeader: {
       fontWeight: 'bold',
       fontSize: 15,
       color: isDarkTheme ? '#aee7ff' : '#22457f',
       marginLeft: 22,
-      marginTop: 18,
-      marginBottom: 7,
+      marginTop: 12,
+      marginBottom: 4,
       letterSpacing: 0.45,
     },
     eventCard: {
@@ -255,30 +257,40 @@ export default function HomeScreen({ navigation }) {
           placeholder="Search Events..."
           value={search}
           onChangeText={setSearch}
-          style={styles.search}
+          style={[styles.search, { height: 40 }]}
         />
-        <View style={styles.chipRow}>
-          {FILTERS.map(f => {
-            const selectedChip = selected.includes(f);
-            return (
-              <Chip
-                key={f}
-                style={[styles.chip, selectedChip && styles.chipSelected]}
-                textStyle={[styles.chipLabel, selectedChip && styles.chipLabelSelected]}
-                onPress={() =>
-                  setSelected(old =>
-                    old.includes(f)
-                      ? old.filter(tag => tag !== f)
-                      : [...old, f],
-                  )
-                }
-                mode={selectedChip ? 'flat' : 'outlined'}
-              >
-                {f}
-              </Chip>
-            );
-          })}
-        </View>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginBottom: 4 }}
+        >
+          <View style={styles.chipRow}>
+            {FILTERS.map(f => {
+              const selectedChip = selected.includes(f);
+              return (
+                <Chip
+                  key={f}
+                  style={[styles.chip, selectedChip && styles.chipSelected]}
+                  textStyle={[
+                    styles.chipLabel,
+                    selectedChip && styles.chipLabelSelected,
+                  ]}
+                  onPress={() =>
+                    setSelected(old =>
+                      old.includes(f)
+                        ? old.filter(tag => tag !== f)
+                        : [...old, f],
+                    )
+                  }
+                  mode={selectedChip ? 'flat' : 'outlined'}
+                >
+                  {f}
+                </Chip>
+              );
+            })}
+          </View>
+        </ScrollView>
       </View>
 
       {loading ? (
@@ -295,7 +307,7 @@ export default function HomeScreen({ navigation }) {
           renderItem={({ item }) => (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('Events', {
+                navigation.navigate('EventsTab', {
                   screen: 'Details',
                   params: { event: item },
                 })

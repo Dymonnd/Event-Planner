@@ -34,20 +34,49 @@ export default function SettingsScreen() {
   const [textSize, setTextSize] = React.useState(16);
 
   return (
-    <SafeAreaView style={styles.safeContainer} edges={['top', 'left', 'right']}>
-      <View style={styles.container}>
+  <SafeAreaView style={styles.safeContainer} edges={['top', 'left', 'right']}>
+    <View style={styles.container}>
+      <View style={styles.settingRow}>
+        <Text
+          style={styles.text}
+          accessibilityLabel="Dark Theme"
+          accessibilityHint="Toggles between dark and light theme"
+        >
+          Dark Theme
+        </Text>
+        <Switch
+          value={isDarkTheme}
+          onValueChange={() => setIsDarkTheme(!isDarkTheme)}
+          accessibilityLabel="Dark Theme Toggle"
+          accessibilityHint="Switch to enable or disable dark mode"
+        />
+      </View>
+
+
         <View style={styles.settingRow}>
-          <Text style={styles.text}>Dark Theme</Text>
-          <Switch value={isDarkTheme} onValueChange={() => setIsDarkTheme(!isDarkTheme)} />
+          <Text
+            style={styles.text}
+            accessibilityLabel="Sound"
+            accessibilityHint="Toggles sound on or off"
+          >
+            Sound
+          </Text>
+          <Switch
+            value={soundEnabled}
+            onValueChange={() => setSoundEnabled(!soundEnabled)}
+            accessibilityLabel="Sound Toggle"
+            accessibilityHint="Switch to enable or disable sound"
+          />
         </View>
 
         <View style={styles.settingRow}>
-          <Text style={styles.text}> Sound</Text>
-          <Switch value={soundEnabled} onValueChange={() => setSoundEnabled(!soundEnabled)} />
-        </View>
-
-        <View style={styles.settingRow}>
-          <Text style={styles.text}>Text Size</Text>
+          <Text
+            style={styles.text}
+            accessibilityLabel="Text Size"
+            accessibilityHint="Adjusts the size of the text"
+          >
+            Text Size
+          </Text>
           <Slider
             style={{ flex: 1 }}
             minimumValue={12}

@@ -46,7 +46,7 @@ function Tabs() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
           if (route.name === 'Home') iconName = 'home-outline';
-          else if (route.name === 'Events') iconName = 'calendar-outline';
+          else if (route.name === 'EventsTab') iconName = 'calendar-outline';
           else if (route.name === 'Settings') iconName = 'settings-outline';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -54,11 +54,16 @@ function Tabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Events" component={EventsStackScreen} />
+      <Tab.Screen
+        name="EventsTab"
+        component={EventsStackScreen}
+        options={{ tabBarLabel: 'Events' }}
+      />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
+
 
 export default function App() {
   return (

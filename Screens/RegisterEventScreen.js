@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, IconButton } from 'react-native-paper';
@@ -136,20 +137,31 @@ export default function RegisterEventScreen({ route, navigation }) {
     }
 
     if (!emailRegex.test(trimmedEmail)) {
-      Alert.alert('Invalid email', 'Please enter a valid email (e.g. name@example.com).');
+      Alert.alert(
+        'Invalid email',
+        'Please enter a valid email (e.g. name@example.com).',
+      );
       return;
     }
 
     if (trimmedPhone && trimmedPhone.length < 8) {
-      Alert.alert('Invalid phone', 'Please enter a longer phone number or leave it blank.');
+      Alert.alert(
+        'Invalid phone',
+        'Please enter a longer phone number or leave it blank.',
+      );
       return;
     }
 
-    Alert.alert(
-      'Registration successful',
-      `You are registered for ${event?.title || 'the event'}`,
-      [{ text: 'OK', onPress: () => navigation.goBack() }],
-    );
+    const message = `You are registered for ${event?.title || 'the event'}`;
+
+    if (Platform.OS === 'web') {
+      window.alert(message);
+      navigation.goBack();
+    } else {
+      Alert.alert('Registration successful', message, [
+        { text: 'OK', onPress: () => navigation.goBack() },
+      ]);
+    }
   };
 
   if (!event) {
@@ -164,88 +176,96 @@ export default function RegisterEventScreen({ route, navigation }) {
     );
   }
 
+  const content = (
+    <SafeAreaView style={styles.safeContainer} edges={['top', 'left', 'right']}>
+      <View style={styles.headerBar}>
+        <View style={styles.headerTitlePill}>
+          <Text style={styles.headerTitleText}>Register</Text>
+        </View>
+        <IconButton
+          icon="cog-outline"
+          size={24}
+          onPress={() => navigation.navigate('Settings')}
+          color={isDarkTheme ? '#cfe8ff' : '#ffffff'}
+        />
+      </View>
+
+      <View style={styles.content}>
+        <View style={styles.card}>
+          <Text style={styles.selectLabel}>Select an event</Text>
+          <TouchableOpacity
+            style={styles.eventBox}
+            onPress={() => navigation.navigate('Events')}
+          >
+            <View>
+              <Text style={styles.eventTitle}>{event.title}</Text>
+              <Text style={styles.eventSub}>Change Event</Text>
+            </View>
+            <Text style={{ fontSize: 18, color: isDarkTheme ? '#cfe8ff' : '#555' }}>
+              ▾
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.fieldLabel}>Full name</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Bob Jobs"
+            placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
+            value={name}
+            onChangeText={setName}
+          />
+          <Text style={styles.hint}>Name is required</Text>
+
+          <Text style={styles.fieldLabel}>Email</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="bobs@jobsmail.com"
+            placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <Text style={styles.hint}>Enter a valid email</Text>
+
+          <Text style={styles.fieldLabel}>Phone</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="0412345678"
+            placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
+            keyboardType="phone-pad"
+            value={phone}
+            onChangeText={setPhone}
+          />
+          <Text style={styles.hint}>(optional)</Text>
+
+          <View style={styles.submitWrapper}>
+            <Button
+              mode="contained"
+              icon="send"
+              contentStyle={{ height: 44 }}
+              style={styles.submitButton}
+              onPress={handleRegister}
+              labelStyle={{ fontSize: 14 }}
+              buttonColor={isDarkTheme ? '#2aabf7' : '#3CA6E5'}
+            >
+              Submit Registration
+            </Button>
+          </View>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+
+  if (Platform.OS === 'web') {
+    return content;
+  }
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView style={styles.safeContainer} edges={['top', 'left', 'right']}>
-        <View style={styles.headerBar}>
-          <View style={styles.headerTitlePill}>
-            <Text style={styles.headerTitleText}>Register</Text>
-          </View>
-          <IconButton
-            icon="cog-outline"
-            size={24}
-            onPress={() => navigation.navigate('Settings')}
-            color={isDarkTheme ? '#cfe8ff' : '#ffffff'}
-          />
-        </View>
-
-        <View style={styles.content}>
-          <View style={styles.card}>
-            <Text style={styles.selectLabel}>Select an event</Text>
-            <TouchableOpacity
-              style={styles.eventBox}
-              onPress={() => navigation.navigate('Events')}
-            >
-              <View>
-                <Text style={styles.eventTitle}>{event.title}</Text>
-                <Text style={styles.eventSub}>Change Event</Text>
-              </View>
-              <Text style={{ fontSize: 18, color: isDarkTheme ? '#cfe8ff' : '#555' }}>
-                ▾
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.card}>
-            <Text style={styles.fieldLabel}>Full name</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="Bob Jobs"
-              placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
-              value={name}
-              onChangeText={setName}
-            />
-            <Text style={styles.hint}>Name is required</Text>
-
-            <Text style={styles.fieldLabel}>Email</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="bobs@jobsmail.com"
-              placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={email}
-              onChangeText={setEmail}
-            />
-            <Text style={styles.hint}>Enter a valid email</Text>
-
-            <Text style={styles.fieldLabel}>Phone</Text>
-            <TextInput
-              style={styles.textInput}
-              placeholder="0412345678"
-              placeholderTextColor={isDarkTheme ? '#7087a5' : '#aaa'}
-              keyboardType="phone-pad"
-              value={phone}
-              onChangeText={setPhone}
-            />
-            <Text style={styles.hint}>(optional)</Text>
-
-            <View style={styles.submitWrapper}>
-              <Button
-                mode="contained"
-                icon="send"
-                contentStyle={{ height: 44 }}
-                style={styles.submitButton}
-                onPress={handleRegister}
-                labelStyle={{ fontSize: 14 }}
-                buttonColor={isDarkTheme ? '#2aabf7' : '#3CA6E5'}
-              >
-                Submit Registration
-              </Button>
-            </View>
-          </View>
-        </View>
-      </SafeAreaView>
+      {content}
     </TouchableWithoutFeedback>
   );
 }
