@@ -72,9 +72,10 @@ Tested with common screen readers on iOS and Android.
 Running the App
 Clone the repository:
 
-bash
-git clone https://github.com/Dymonnd/SHANICEHUGHES.git
-cd SHANICEHUGHES
+```bash
+git clone https://github.com/Dymonnd/Event-Planner.git
+cd Event-Planner
+```
 Install dependencies:
 
 bash
